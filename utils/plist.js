@@ -20,13 +20,13 @@ const generatePlist = (localIP, bundleID, name) => {
 					<key>kind</key>
 					<string>display-image</string>
 					<key>url</key>
-					<string>https://${localIP}:5555/img/jackal.png</string>
+					<string>https://${localIP}:5555/img/logo.png</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>full-size-image</string>
 					<key>url</key>
-					<string>https://${localIP}:5555/img/jackal.png</string>
+					<string>https://${localIP}:5555/img/logo.png</string>
 				</dict>
 			</array>
 			<key>metadata</key>

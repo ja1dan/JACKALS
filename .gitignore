@@ -1,4 +1,6 @@
 package-lock.json
-node_modules/
 ipas/*.ipa
+node_modules/
 build/
+server-files/
+cert-files/
