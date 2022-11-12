@@ -13,6 +13,8 @@ const https = require('https')
 const {
 	extractBundleInfo,
 	localIP,
+    log,
+    logError,
 	generatePlist,
 	signFile,
 } = require('./utils/utils.js')
@@ -94,7 +96,7 @@ Promise.all(
             <a href='itms-services://?action=download-manifest&url=https://192.168.1.232:5555/manifests/${name}.plist'>${name}</a>
         </li>
 `
-        console.log(`[*] Signed ${name} in ${Math.round((performance.now() - start) / 1000)} seconds.`)
+        log(`Signed ${name} in ${Math.round((performance.now() - start) / 1000)} seconds.`)
 	})
 ).then(() => {
     // finish off html
@@ -113,21 +115,30 @@ Promise.all(
 		res.status(200).sendFile(`${__dirname}/server-files/logo.png`)
 	})
     // log number of signed apps
-	console.log(
-		`-----------------\n[*] Successfully signed ${filteredFiles.length} applications.`
-	)
+	console.log('-----------------')
+    log(`Successfully signed ${filteredFiles.length} applications.`)
     // fetch keys (for https)
+    if (!fs.existsSync(`${__dirname}/server-files/cert.pem`)) {
+        logError('Could not start server; missing server-files/cert.pem. See README.md for more info.')
+        cleanup()
+        process.exit(1)
+    }
+    if (!fs.existsSync(`${__dirname}/server-files/key.pem`)) {
+        logError('Could not start server; missing server-files/key.pem. See README.md for more info.')
+        cleanup()
+        process.exit(1)
+    }
 	let privateKey = fs.readFileSync(`${__dirname}/server-files/key.pem`)
 	let certificate = fs.readFileSync(`${__dirname}/server-files/cert.pem`)
 	let credentials = { key: privateKey, cert: certificate }
     // start server
 	https.createServer(credentials, app).listen(port, () => {
-		console.log('[*] Listening -> https://' + localIP + ':' + port)
+		log('Listening -> https://' + localIP + ':' + port)
 	})
 })
 
 process.on('SIGINT', function () {
-    console.log('[^] Cleaning up...')
+    log('Cleaning up...')
 	cleanup()
 	process.exit()
 })

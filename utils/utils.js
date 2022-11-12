@@ -8,12 +8,15 @@
 // IMPORTS
 const { extractBundleInfo } = require('./bundle')
 const { localIP } = require('./ip')
+const { log, logError } = require('./logging')
 const { generatePlist } = require('./plist')
 const { signFile } = require('./sign')
 
 module.exports = {
 	extractBundleInfo,
 	localIP,
+    log,
+    logError,
 	generatePlist,
 	signFile,
 }
