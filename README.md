@@ -1,9 +1,13 @@
 # JACKALS
 ## Jaidan's Awesome Cool Kick Ass Local Service
-private signing service
 
-runs at https://localhost:5555
+## Setup
+See [SETUP.md](SETUP.md)
 
-includes list of apps that were signed, links to install
+## Usage
+`node build.js`
 
-usage: node build.js
+## Credits
+[Myself, lead developer](https://github.com/ja1dan)  
+[iCraze, helped with avoiding blacklists and signing](https://github.com/iCrazeiOS)  
+[StackOverflow](https://stackoverflow.com)  
