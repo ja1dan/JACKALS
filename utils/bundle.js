@@ -1,26 +1,47 @@
+/**
+ * JACKALS - Jaidan's Awesome Cool Kick Ass Local Service
+ * https://github.com/ja1dan/JACKALS
+ * utils/bundle.js
+ * Copyright (c) Jaidan 2022-
+ **/
+
+// IMPORTS
 const cp = require('child_process')
 const fs = require('fs')
 const plist = require('simple-plist')
 
+// declare working directory
 let workingDir = `${__dirname}/../build`
 
+/**
+ * Extract bundle info from an IPA file.
+ * @param {string} file name of the IPA file
+ * @returns {string} bundle ID of the IPA
+ */
 const extractBundleInfo = async (file) => {
-    let name = file.split(".ipa")[0];
-    await cp.execSync(
-        `mkdir -p ${workingDir}/${name}_tmp_extract && unzip ${workingDir}/signed-ipas/signed-${file} -d ${workingDir}/${name}_tmp_extract`,
-        { stdio: 'ignore' }
-    );
-    let appDir = fs
-        .readdirSync(`${workingDir}/${name}_tmp_extract/Payload`)
-        .filter((fn) => fn.endsWith(".app"))[0];
-    let plistFileRaw = fs.readFileSync(
-        `${workingDir}/${name}_tmp_extract/Payload/${appDir}/Info.plist`
-    );
-    let info = plist.parse(plistFileRaw);
-    await cp.execSync(`rm -rf ${workingDir}/${name}_tmp_extract`, {
-        stdio: 'ignore',
-    });
-    return info.CFBundleIdentifier;
-};
+    // get name of IPA from filename
+	let name = file.split('.ipa')[0]
+    // create temporary directory and extract IPA contents
+	await cp.execSync(
+		`mkdir -p ${workingDir}/${name}_tmp_extract && unzip ${workingDir}/signed-ipas/signed-${file} -d ${workingDir}/${name}_tmp_extract`,
+		{ stdio: 'ignore' }
+	)
+    // find .app file
+	let appDir = fs
+		.readdirSync(`${workingDir}/${name}_tmp_extract/Payload`)
+		.filter((fn) => fn.endsWith('.app'))[0]
+    // read the plist file
+	let plistFileRaw = fs.readFileSync(
+		`${workingDir}/${name}_tmp_extract/Payload/${appDir}/Info.plist`
+	)
+    // parse plist file
+	let info = plist.parse(plistFileRaw)
+    // remove tmp directory
+	await cp.execSync(`rm -rf ${workingDir}/${name}_tmp_extract`, {
+		stdio: 'ignore',
+	})
+    // return bundle ID
+	return info.CFBundleIdentifier
+}
 
 module.exports = { extractBundleInfo }

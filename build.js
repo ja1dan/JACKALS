@@ -1,24 +1,44 @@
-const cp = require('child_process');
-const express = require('express');
-const fs = require('fs');
-const https = require('https');
-const { extractBundleInfo, localIP, generatePlist, signFile } = require('./utils/utils.js')
+/**
+ * JACKALS - Jaidan's Awesome Cool Kick Ass Local Service
+ * https://github.com/ja1dan/JACKALS
+ * build.js
+ * Copyright (c) Jaidan 2022-
+**/
 
-const app = express();
-const port = 5555;
+// IMPORTS
+const cp = require('child_process')
+const express = require('express')
+const fs = require('fs')
+const https = require('https')
+const {
+	extractBundleInfo,
+	localIP,
+	generatePlist,
+	signFile,
+} = require('./utils/utils.js')
 
-const cleanup = () => cp.execSync(`rm -rf *_tmp_extract ${__dirname}/build`, { stdio: 'ignore' });
+// define express
+const app = express()
+const port = 5555
 
+// cleanup function (removes build files)
+const cleanup = () =>
+	cp.execSync(`rm -rf *_tmp_extract ${__dirname}/build`, { stdio: 'ignore' })
+// declare working directory (where the build files will be stored)
 let workingDir = `${__dirname}/build`
-let files = fs.readdirSync(`${__dirname}/ipas`);
-let filteredFiles = files.filter((val) => { return val.endsWith('.ipa')})
+// declare the ipa file path, and filter out the .keep file
+let files = fs.readdirSync(`${__dirname}/ipas`)
+let filteredFiles = files.filter((val) => {
+	return val.endsWith('.ipa')
+})
+// start our webpage where the IPAs will go
 let html = `<!DOCTYPE html>
 <html>
 <head>
     <title>JACKALS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" href="./img/logo.png">
-	<link rel="icon" href="./img/logo.png">
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='apple-touch-icon' href='./img/logo.png'>
+	<link rel='icon' href='./img/logo.png'>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -44,48 +64,70 @@ let html = `<!DOCTYPE html>
     <ul>
 `
 
+// clean up build folder, just in case last run didn't exit cleanly
 cleanup()
 
-Promise.all(filteredFiles.map(async file => {
-    let name = file.split('.ipa')[0]
-    await signFile(file, name)
-    let bundleID = await extractBundleInfo(file)
-    generatePlist(localIP, bundleID, name)
-    app.get(`/signed-ipas/${name}.ipa`, (req, res) => {
-        res.status(200).sendFile(`${workingDir}/signed-ipas/signed-${name}.ipa`)
-    })
-
-    app.get(`/manifests/${name}.plist`, (req, res) => {
-        res.status(200).sendFile(`${workingDir}/manifests/${name}.plist`)
-    })
-
-    html += `       <li>
-            <a href="itms-services://?action=download-manifest&url=https://192.168.1.232:5555/manifests/${name}.plist">${name}</a>
+Promise.all(
+	filteredFiles.map(async (file) => {
+        // start timer
+        let start = performance.now()
+        // filter out name from IPA path
+		let name = file.split('.ipa')[0]
+        // sign the IPA
+		await signFile(file, name)
+        // get the bundleID from Info.plist
+		let bundleID = await extractBundleInfo(file)
+        // generate plist manifest
+		generatePlist(localIP, bundleID, name)
+        // host signed IPA
+		app.get(`/signed-ipas/${name}.ipa`, (req, res) => {
+			res.status(200).sendFile(
+				`${workingDir}/signed-ipas/signed-${name}.ipa`
+			)
+		})
+        // host manifest
+		app.get(`/manifests/${name}.plist`, (req, res) => {
+			res.status(200).sendFile(`${workingDir}/manifests/${name}.plist`)
+		})
+        // add to html
+		html += `       <li>
+            <a href='itms-services://?action=download-manifest&url=https://192.168.1.232:5555/manifests/${name}.plist'>${name}</a>
         </li>
 `
-})).then(() => {
-    html += `   </ul>
-    <div id="bottom">
+        console.log(`[*] Signed ${name} in ${Math.round((performance.now() - start) / 1000)} seconds.`)
+	})
+).then(() => {
+    // finish off html
+	html += `   </ul>
+    <div id='bottom'>
         <center><p>jaidan's awesome cool kick ass local service<br>2022</p></center>
     </div>
 </body>
-</html>`;
-    app.get('/', (req, res) => {
-        res.send(html)
-    })
-    app.get('/img/logo.png', (req, res) => {
-        res.status(200).sendFile(`${__dirname}/server-files/logo.png`)
-    })
-    console.log(`-----------------\n[*] Successfully signed ${filteredFiles.length} applications.`);
-    let privateKey = fs.readFileSync(`${__dirname}/server-files/key.pem`)
-    let certificate = fs.readFileSync(`${__dirname}/server-files/cert.pem`)
-    let credentials = { key: privateKey, cert: certificate }
-    https.createServer(credentials, app).listen(port, () => {
-        console.log('[*] Listening -> https://' + localIP + ':' + port)
-    })
+</html>`
+    // host html
+	app.get('/', (req, res) => {
+		res.send(html)
+	})
+    // host logo
+	app.get('/img/logo.png', (req, res) => {
+		res.status(200).sendFile(`${__dirname}/server-files/logo.png`)
+	})
+    // log number of signed apps
+	console.log(
+		`-----------------\n[*] Successfully signed ${filteredFiles.length} applications.`
+	)
+    // fetch keys (for https)
+	let privateKey = fs.readFileSync(`${__dirname}/server-files/key.pem`)
+	let certificate = fs.readFileSync(`${__dirname}/server-files/cert.pem`)
+	let credentials = { key: privateKey, cert: certificate }
+    // start server
+	https.createServer(credentials, app).listen(port, () => {
+		console.log('[*] Listening -> https://' + localIP + ':' + port)
+	})
 })
 
 process.on('SIGINT', function () {
-    cleanup()
-    process.exit()
+    console.log('[^] Cleaning up...')
+	cleanup()
+	process.exit()
 })
