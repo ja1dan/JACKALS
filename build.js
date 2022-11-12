@@ -112,7 +112,11 @@ Promise.all(
 	})
     // host logo
 	app.get('/img/logo.png', (req, res) => {
-		res.status(200).sendFile(`${__dirname}/server-files/logo.png`)
+        if (fs.existsSync(`${__dirname}/img/logo.png`)) {
+		    res.status(200).sendFile(`${__dirname}/server-files/logo.png`)
+        } else {
+            res.status(404)
+        }
 	})
     // log number of signed apps
 	console.log('-----------------')
