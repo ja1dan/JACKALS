@@ -17,8 +17,8 @@ let html = `<!DOCTYPE html>
 <head>
     <title>JACKALS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" href="./img/jackal.png">
-	<link rel="icon" href="./img/jackal.png">
+    <link rel="apple-touch-icon" href="./img/logo.png">
+	<link rel="icon" href="./img/logo.png">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
@@ -73,8 +73,8 @@ Promise.all(filteredFiles.map(async file => {
     app.get('/', (req, res) => {
         res.send(html)
     })
-    app.get('/img/jackal.png', (req, res) => {
-        res.status(200).sendFile(`${__dirname}/server-files/jackal.png`)
+    app.get('/img/logo.png', (req, res) => {
+        res.status(200).sendFile(`${__dirname}/server-files/logo.png`)
     })
     console.log(`-----------------\n[*] Successfully signed ${filteredFiles.length} applications.`);
     let privateKey = fs.readFileSync(`${__dirname}/server-files/key.pem`)
