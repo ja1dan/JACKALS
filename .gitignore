@@ -2,5 +2,9 @@ package-lock.json
 ipas/*.ipa
 node_modules/
 build/
-server-files/
-cert-files/
+server-files/*.pem
+server-files/*.png
+cert-files/*.p12
+cert-files/*.txt
+cert-files/zsign
+cert-files/*.mobileprovision
