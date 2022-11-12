@@ -1,4 +1,5 @@
-# signer
+# JACKALS
+## Jaidan's Awesome Cool Kick Ass Local Service
 private signing service
 
 runs at https://localhost:5555
