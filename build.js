@@ -142,6 +142,7 @@ Promise.all(
 })
 
 process.on('SIGINT', function () {
+    console.log('')
     log('Cleaning up...')
 	cleanup()
 	process.exit()
