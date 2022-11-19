@@ -82,18 +82,18 @@ Promise.all(
         // generate plist manifest
 		generatePlist(localIP, bundleID, name)
         // host signed IPA
-		app.get(`/signed-ipas/${name}.ipa`, (req, res) => {
+		app.get(`/signed-ipas/${name.replace(' ', '-')}.ipa`, (req, res) => {
 			res.status(200).sendFile(
-				`${workingDir}/signed-ipas/signed-${name}.ipa`
+				`${workingDir}/signed-ipas/signed-${name.replace(' ', '-')}.ipa`
 			)
 		})
         // host manifest
-		app.get(`/manifests/${name}.plist`, (req, res) => {
-			res.status(200).sendFile(`${workingDir}/manifests/${name}.plist`)
+		app.get(`/manifests/${name.replace(' ', '-')}.plist`, (req, res) => {
+			res.status(200).sendFile(`${workingDir}/manifests/${name.replace(' ', '-')}.plist`)
 		})
         // add to html
 		html += `       <li>
-            <a href='itms-services://?action=download-manifest&url=https://192.168.1.232:5555/manifests/${name}.plist'>${name}</a>
+            <a href='itms-services://?action=download-manifest&url=https://192.168.1.232:5555/manifests/${name.replace(' ', '-')}.plist'>${name}</a>
         </li>
 `
         log(`Signed ${name} in ${Math.round((performance.now() - start) / 1000)} seconds.`)

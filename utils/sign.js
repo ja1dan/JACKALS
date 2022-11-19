@@ -13,6 +13,8 @@ const { log, logError } = require('./logging')
 // declare working directory
 let workingDir = `${__dirname}/../build`
 
+const addSlashes = (str) => str.replace(' ', '\\ ')
+
 /**
  * Generate a random bundleID (to prevent blacklisting).
  * @returns {string} a random bundle ID, with the format of com.<random 3 digits>.<random 4 digits>
@@ -48,7 +50,7 @@ const signFile = async (file, name) => {
 	    log(`Signing ${name}...`)
         // sign the IPA and output it to build/signed-ipas
 	    await cp.execSync(
-		    `mkdir -p ${workingDir}/signed-ipas && ${__dirname}/../cert-files/zsign -k ${__dirname}/../cert-files/cert.p12 -p $(cat ${__dirname}/../cert-files/pass.txt) -m ${__dirname}/../cert-files/cert.mobileprovision -b '${makeBundleID()}' -o ${workingDir}/signed-ipas/signed-${name}.ipa ${__dirname}/../ipas/${file}`,
+		    `mkdir -p ${workingDir}/signed-ipas && ${__dirname}/../cert-files/zsign -k ${__dirname}/../cert-files/cert.p12 -p $(cat ${__dirname}/../cert-files/pass.txt) -m ${__dirname}/../cert-files/cert.mobileprovision -b '${makeBundleID()}' -o ${workingDir}/signed-ipas/signed-${name.replace(' ', '-')}.ipa ${__dirname}/../ipas/${addSlashes(file)}`,
 		    { stdio: 'ignore' }
 	    )
     } catch (e) {

@@ -34,7 +34,7 @@ const generatePlist = (localIP, bundleID, name) => {
 					<key>kind</key>
 					<string>software-package</string>
 					<key>url</key>
-					<string>https://${localIP}:5555/signed-ipas/${name}.ipa</string>
+					<string>https://${localIP}:5555/signed-ipas/${name.replace(' ', '-')}.ipa</string>
 				</dict>
 				<dict>
 					<key>kind</key>
@@ -66,7 +66,7 @@ const generatePlist = (localIP, bundleID, name) => {
 </plist>
 `
         // write plist to file
-	    fs.writeFileSync(`${__dirname}/../build/manifests/${name}.plist`, plistRaw)
+	    fs.writeFileSync(`${__dirname}/../build/manifests/${name.replace(' ', '-')}.plist`, plistRaw)
     } catch (e) {
         logError(`Could not generate plist manifest for ${name}. (${e})`)
     }

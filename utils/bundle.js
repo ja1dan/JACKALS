@@ -14,6 +14,8 @@ const { logError } = require('./logging')
 // declare working directory
 let workingDir = `${__dirname}/../build`
 
+const addSlashes = (str) => str.replace(' ', '\\ ')
+
 /**
  * Extract bundle info from an IPA file.
  * @param {string} file name of the IPA file
@@ -25,7 +27,7 @@ const extractBundleInfo = async (file) => {
 		let name = file.split('.ipa')[0]
 		// create temporary directory and extract IPA contents
 		await cp.execSync(
-			`mkdir -p ${workingDir}/${name}_tmp_extract && unzip ${workingDir}/signed-ipas/signed-${file} -d ${workingDir}/${name}_tmp_extract`,
+			`mkdir -p ${workingDir}/${name}_tmp_extract && unzip ${workingDir}/signed-ipas/signed-${file.replace(' ', '-')} -d ${workingDir}/${addSlashes(name)}_tmp_extract`,
 			{ stdio: 'ignore' }
 		)
 		// find .app file
@@ -39,7 +41,7 @@ const extractBundleInfo = async (file) => {
 		// parse plist file
 		let info = plist.parse(plistFileRaw)
 		// remove tmp directory
-		await cp.execSync(`rm -rf ${workingDir}/${name}_tmp_extract`, {
+		await cp.execSync(`rm -rf ${workingDir}/${addSlashes(name)}_tmp_extract`, {
 			stdio: 'ignore',
 		})
 		// return bundle ID
