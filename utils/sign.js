@@ -49,7 +49,7 @@ const signFile = async (file, name) => {
         // log that we're signing the file
 	    log(`Signing ${name}...`)
         // sign the IPA and output it to build/signed-ipas
-	    await cp.execSync(
+	    cp.execSync(
 		    `mkdir -p ${workingDir}/signed-ipas && ${__dirname}/../cert-files/zsign -k ${__dirname}/../cert-files/cert.p12 -p $(cat ${__dirname}/../cert-files/pass.txt) -m ${__dirname}/../cert-files/cert.mobileprovision -b '${makeBundleID()}' -o ${workingDir}/signed-ipas/signed-${name.replace(' ', '-')}.ipa ${__dirname}/../ipas/${addSlashes(file)}`,
 		    { stdio: 'ignore' }
 	    )

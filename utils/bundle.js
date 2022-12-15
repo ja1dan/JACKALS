@@ -26,7 +26,7 @@ const extractBundleInfo = async (file) => {
 		// get name of IPA from filename
 		let name = file.split('.ipa')[0]
 		// create temporary directory and extract IPA contents
-		await cp.execSync(
+		cp.execSync(
 			`mkdir -p ${workingDir}/${name}_tmp_extract && unzip ${workingDir}/signed-ipas/signed-${file.replace(' ', '-')} -d ${workingDir}/${addSlashes(name)}_tmp_extract`,
 			{ stdio: 'ignore' }
 		)
@@ -41,7 +41,7 @@ const extractBundleInfo = async (file) => {
 		// parse plist file
 		let info = plist.parse(plistFileRaw)
 		// remove tmp directory
-		await cp.execSync(`rm -rf ${workingDir}/${addSlashes(name)}_tmp_extract`, {
+		cp.execSync(`rm -rf ${workingDir}/${addSlashes(name)}_tmp_extract`, {
 			stdio: 'ignore',
 		})
 		// return bundle ID
