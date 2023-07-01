@@ -5,9 +5,9 @@
 See [SETUP.md](SETUP.md)
 
 ## Usage
-`node build.js`
+`node server.js`
 
 ## Credits
-[Myself, lead developer](https://github.com/ja1dan)  
-[iCraze, helped with avoiding blacklists and signing](https://github.com/iCrazeiOS)  
-[StackOverflow](https://stackoverflow.com)  
+[Myself, lead developer](https://github.com/ja1dan)
+[iCraze, helped with avoiding blacklists and signing](https://github.com/iCrazeiOS)
+[StackOverflow](https://stackoverflow.com)
