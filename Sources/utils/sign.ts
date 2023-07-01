@@ -8,7 +8,7 @@
 // IMPORTS
 import { execSync } from 'child_process'
 import { existsSync } from 'fs'
-import { log, logError } from './utils'
+import { log, logError, yellow } from './utils'
 
 // declare working directory
 let workingDir = `${__dirname}/../../build`
@@ -54,7 +54,7 @@ const signFile = async (file: string, name: string) => {
       { stdio: 'ignore' }
     )
   } catch (e) {
-    logError(`Could not sign ${name}. (${e})`)
+    logError(`Could not sign ${yellow(name)}. (${e})`)
   }
 }
 

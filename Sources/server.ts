@@ -15,6 +15,7 @@ import {
   localIP,
   log,
   logError,
+  yellow,
   generatePlist,
   signFile
 } from './utils/utils'
@@ -96,7 +97,7 @@ Promise.all(
             <a href='itms-services://?action=download-manifest&url=https://192.168.1.232:5555/manifests/${name.replace(' ', '-')}.plist'>${name}</a>
         </li>
 `
-    log(`Signed ${name} in ${Math.round((performance.now() - start) / 1000)} seconds.`)
+    log(`Signed ${yellow(name)} in ${yellow(Math.round((performance.now() - start) / 1000).toString())} seconds.`)
   })
 ).then(() => {
   // finish off html
@@ -120,15 +121,15 @@ Promise.all(
   })
   // log number of signed apps
   console.log('-----------------')
-  log(`Successfully signed ${filteredFiles.length} applications.`)
+  log(`Successfully signed ${yellow(filteredFiles.length.toString())} applications.`)
   // fetch keys (for https)
   if (!existsSync(`${__dirname}/Server-Files/cert.pem`)) {
-    logError('Could not start server; missing Server-Files/cert.pem. See README.md for more info.')
+    logError(`Could not start server; missing ${yellow("Server-Files/cert.pem")}. See ${yellow("README.md")} for more info.`)
     cleanup()
     process.exit(1)
   }
   if (!existsSync(`${__dirname}/Server-Files/key.pem`)) {
-    logError('Could not start server; missing Server-Files/key.pem. See README.md for more info.')
+    logError(`Could not start server; missing ${yellow("Server-Files/key.pem")}. See ${yellow("README.md")} for more info.`)
     cleanup()
     process.exit(1)
   }
@@ -137,7 +138,7 @@ Promise.all(
   let credentials = { key: privateKey, cert: certificate }
   // start server
   createServer(credentials, app).listen(port, () => {
-    log('Listening -> https://' + localIP + ':' + port)
+    log(`Listening -> ${yellow("https://" + localIP + ":" + port)}`)
   })
 })
 

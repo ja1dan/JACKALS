@@ -9,7 +9,7 @@
 import { execSync } from 'child_process'
 import { readdirSync, readFileSync } from 'fs'
 import { parse } from 'simple-plist/dist/parse'
-import { logError } from './logging'
+import { logError, yellow } from './logging'
 
 // declare working directory
 let workingDir = `${__dirname}/../../build`
@@ -46,7 +46,7 @@ const extractBundleInfo = async (file: string) => {
     // return bundle ID
     return info["CFBundleIdentifier"]
   } catch (e) {
-    logError(`Could not extract bundle info from ${file}. (${e})`)
+    logError(`Could not extract bundle info from ${yellow(file)}. (${e})`)
   }
 }
 

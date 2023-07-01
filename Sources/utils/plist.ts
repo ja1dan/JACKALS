@@ -8,7 +8,7 @@
 // IMPORTS
 import { execSync } from 'child_process'
 import { writeFileSync } from 'fs'
-import { logError } from './utils'
+import { logError, yellow } from './utils'
 
 /**
  * Generate plist manifest to install a signed IPA file.
@@ -68,7 +68,7 @@ const generatePlist = (localIP: string, bundleID: string, name: string) => {
     // write plist to file
     writeFileSync(`${__dirname}/../../build/manifests/${name.replace(' ', '-')}.plist`, plistRaw)
   } catch (e) {
-    logError(`Could not generate plist manifest for ${name}. (${e})`)
+    logError(`Could not generate plist manifest for ${yellow(name)}. (${e})`)
   }
 }
 

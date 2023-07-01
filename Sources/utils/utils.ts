@@ -8,7 +8,7 @@
 // IMPORTS
 import { extractBundleInfo } from './bundle'
 import { localIP } from './ip'
-import { log, logError } from './logging'
+import { log, logError, gray, yellow, blue, bold } from './logging'
 import { generatePlist } from './plist'
 import { signFile } from './sign'
 
@@ -17,6 +17,10 @@ export {
   localIP,
   log,
   logError,
+  gray,
+  yellow,
+  blue,
+  bold,
   generatePlist,
   signFile
 }

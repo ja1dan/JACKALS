@@ -5,39 +5,73 @@
  * Copyright (c) Jaidan 2022-
  **/
 
-/**
- * Make text green.
- * @param {string} tg String to make green
- * @returns {string} Green string
- */
-let green = (tg: string) => `\x1b[32m${tg}\x1b[0m`
+// IMPORTS
+import * as c from 'colorette'
+import pino from 'pino';
+import pretty from 'pino-pretty';
+
+const stream = pretty({
+  colorize: true,
+
+  messageFormat: "\x1B[37m{msg}"
+})
+const logger = pino(stream)
+
+// Reset
+let reset = "\x1B[37m"
 
 /**
  * Make text gray.
- * @param {string} tg String to make gray
+ * @param {string} text String to make gray
  * @returns {string} Gray string
  */
-let gray = (tg: string) => `\x1b[90m${tg}\x1b[0m`
+let gray = (text: string) => {
+  return c.gray(text) + reset
+}
 
 /**
- * Make text red.
- * @param {string} tr String to make red
- * @returns {string} Red string
+ * Make text yellow.
+ * @param {string} text String to make yellow
+ * @returns {string} Yellow string
  */
-let red = (tr: string) => `\x1b[31m${tr}\x1b[0m`
+let yellow = (text: string) => {
+  return c.yellow(text) + reset
+}
+
+/**
+ * Make text blue.
+ * @param {string} text String to make blue
+ * @returns {string} Blue string
+ */
+let blue = (text: string) => {
+  return c.blue(text) + reset
+}
+
+/**
+ * Make text bold.
+ * @param {string} text String to make bold
+ * @returns {string} Bold string
+ */
+let bold = (text: string) => {
+  return c.bold(text) + reset
+}
 
 /**
  * Log information.
  * @param {str} text String to log
  */
-const log = (text: string) => console.log(`${gray('[')}${green('*')}${gray(']')} ${text}`)
+const log = (text: string) => logger.info(text)
 /**
  * Log an error.
  * @param {str} text String to log
  */
-const logError = (text: string) => console.log(`${gray('[')}${red('!')}${gray(']')} ERROR: ${text}`)
+const logError = (text: string) => logger.error(text)
 
 export {
   log,
-  logError
+  logError,
+  gray,
+  yellow,
+  blue,
+  bold
 }
