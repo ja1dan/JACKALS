@@ -1,14 +1,14 @@
 /**
  * JACKALS - Jaidan's Awesome Cool Kick Ass Local Service
  * https://github.com/ja1dan/JACKALS
- * utils/plist.js
+ * utils/plist.ts
  * Copyright (c) Jaidan 2022-
  **/
 
 // IMPORTS
-const cp = require('child_process')
-const fs = require('fs')
-const { logError } = require('./logging')
+import { execSync } from 'child_process'
+import { writeFileSync } from 'fs'
+import { logError } from './utils'
 
 /**
  * Generate plist manifest to install a signed IPA file.
@@ -16,12 +16,12 @@ const { logError } = require('./logging')
  * @param {string} bundleID bundleID of the app to be installed
  * @param {string} name name of the app to be installed
  */
-const generatePlist = (localIP, bundleID, name) => {
-    try {
-        // create folder for manifests (if we haven't already)
-	    cp.execSync(`mkdir -p ${__dirname}/../build/manifests`, { stdio: 'ignore' })
-        // create plist raw
-	    let plistRaw = `<?xml version="1.0" encoding="UTF-8"?>
+const generatePlist = (localIP: string, bundleID: string, name: string) => {
+  try {
+    // create folder for manifests (if we haven't already)
+    execSync(`mkdir -p ${__dirname}/../../build/manifests`, { stdio: 'ignore' })
+    // create plist raw
+    let plistRaw = `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -34,7 +34,7 @@ const generatePlist = (localIP, bundleID, name) => {
 					<key>kind</key>
 					<string>software-package</string>
 					<key>url</key>
-					<string>https://${localIP}:5555/signed-ipas/${name.replace(' ', '-')}.ipa</string>
+					<string>https://${localIP}:5555/Signed-IPAs/${name.replace(' ', '-')}.ipa</string>
 				</dict>
 				<dict>
 					<key>kind</key>
@@ -65,11 +65,11 @@ const generatePlist = (localIP, bundleID, name) => {
 </dict>
 </plist>
 `
-        // write plist to file
-	    fs.writeFileSync(`${__dirname}/../build/manifests/${name.replace(' ', '-')}.plist`, plistRaw)
-    } catch (e) {
-        logError(`Could not generate plist manifest for ${name}. (${e})`)
-    }
+    // write plist to file
+    writeFileSync(`${__dirname}/../../build/manifests/${name.replace(' ', '-')}.plist`, plistRaw)
+  } catch (e) {
+    logError(`Could not generate plist manifest for ${name}. (${e})`)
+  }
 }
 
-module.exports = { generatePlist }
+export { generatePlist }
